@@ -40,6 +40,56 @@ h1 {
     margin-bottom: 20px;
     align-items: center;
 }
+.filters {
+    display: flex;
+    justify-content: center; /* Center the filter buttons */
+    gap: 10px; /* Space between buttons */
+    margin-bottom: 20px;
+    flex-wrap: wrap; /* Allow buttons to wrap on smaller screens */
+}
+
+.filter-btn {
+    background-color: #f0f0f0;
+    color: #555;
+    border: 1px solid #ddd;
+    padding: 8px 15px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.95em;
+    transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+    flex-grow: 1; /* Allow buttons to grow */
+    min-width: 100px; /* Minimum width for buttons */
+    text-align: center;
+}
+
+.filter-btn:hover {
+    background-color: #e0e0e0;
+    color: #333;
+    border-color: #ccc;
+}
+
+.filter-btn.active {
+    background-color: #007bff; /* Active filter button color */
+    color: white;
+    border-color: #007bff;
+    font-weight: bold;
+}
+
+.filter-btn.active:hover {
+    background-color: #0056b3;
+    border-color: #0056b3;
+}
+
+/* Adjust filter buttons for small screens */
+@media (max-width: 600px) {
+    .filters {
+        flex-direction: column; /* Stack filter buttons vertically */
+        gap: 8px;
+    }
+    .filter-btn {
+        width: 100%; /* Full width for stacked buttons */
+    }
+}
 
 #taskInput, #dueDateInput {
     flex-grow: 1;
