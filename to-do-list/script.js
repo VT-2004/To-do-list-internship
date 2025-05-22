@@ -5,6 +5,15 @@ const dueDateInput = document.getElementById('dueDateInput');
 const addTaskBtn = document.getElementById('addTaskBtn');
 const todoList = document.getElementById('todoList');
 
+// NEW CODE START - Get references to filter buttons and define currentFilter
+const allFilterBtn = document.getElementById('allFilterBtn');
+const activeFilterBtn = document.getElementById('activeFilterBtn');
+const completedFilterBtn = document.getElementById('completedFilterBtn');
+
+let currentFilter = 'all'; // Default filter
+// NEW CODE END
+
+
 /**
  * Sets the minimum date for the due date input to today's date,
  * preventing users from selecting past dates.
@@ -32,6 +41,9 @@ function loadTasks() {
             addTaskToDOM(task);
         }
     });
+    // NEW CODE START - Apply filter after loading all tasks
+    filterTasks();
+    // NEW CODE END
 }
 
 /**
@@ -50,6 +62,54 @@ function saveTasks() {
     });
     localStorage.setItem('tasks', JSON.stringify(tasks));
 }
+
+// NEW CODE START - Filter Tasks Function
+/**
+ * Filters the tasks displayed in the To-Do list based on the current filter setting.
+ * Tasks are shown or hidden depending on their completion status and the selected filter.
+ */
+function filterTasks() {
+    const todoItems = document.querySelectorAll('.todo-item');
+    todoItems.forEach(item => {
+        const isCompleted = item.classList.contains('completed');
+        switch (currentFilter) {
+            case 'all':
+                item.style.display = 'flex'; // Show all tasks
+                break;
+            case 'active':
+                item.style.display = isCompleted ? 'none' : 'flex'; // Show only active tasks
+                break;
+            case 'completed':
+                item.style.display = isCompleted ? 'flex' : 'none'; // Show only completed tasks
+                break;
+        }
+    });
+}
+
+/**
+ * Updates the active state of filter buttons and applies the filter.
+ * @param {string} filterType - The type of filter to apply ('all', 'active', 'completed').
+ */
+function setActiveFilter(filterType) {
+    // Remove 'active' class from all buttons
+    allFilterBtn.classList.remove('active');
+    activeFilterBtn.classList.remove('active');
+    completedFilterBtn.classList.remove('active');
+
+    // Add 'active' class to the clicked button
+    if (filterType === 'all') {
+        allFilterBtn.classList.add('active');
+    } else if (filterType === 'active') {
+        activeFilterBtn.classList.add('active');
+    } else if (filterType === 'completed') {
+        completedFilterBtn.classList.add('active');
+    }
+
+    currentFilter = filterType; // Update the global filter state
+    filterTasks(); // Apply the filter
+}
+// NEW CODE END
+
 
 /**
  * Adds a new task item to the DOM based on the provided task object.
@@ -73,6 +133,9 @@ function addTaskToDOM(taskObj) {
     checkbox.addEventListener('change', function() {
         listItem.classList.toggle('completed', checkbox.checked);
         saveTasks(); // Save state change to local storage
+        // NEW CODE START - Re-apply filter after completion status changes
+        filterTasks();
+        // NEW CODE END
     });
     taskDetails.appendChild(checkbox);
 
@@ -160,11 +223,25 @@ function addTaskToDOM(taskObj) {
         showConfirmationDialog('Are you sure you want to delete this task?', () => {
             listItem.remove();
             saveTasks(); // Update local storage after deletion
+            // NEW CODE START - Re-apply filter after deletion
+            filterTasks();
+            // NEW CODE END
         });
     });
     actionsDiv.appendChild(deleteButton);
 
     todoList.appendChild(listItem);
+
+    // NEW CODE START - Apply filter to newly added task
+    const isCompleted = listItem.classList.contains('completed');
+    if (currentFilter === 'active' && isCompleted) {
+        listItem.style.display = 'none';
+    } else if (currentFilter === 'completed' && !isCompleted) {
+        listItem.style.display = 'none';
+    } else {
+        listItem.style.display = 'flex';
+    }
+    // NEW CODE END
 }
 
 /**
@@ -247,8 +324,18 @@ taskInput.addEventListener('keypress', function(e) {
     }
 });
 
+// NEW CODE START - Event Listeners for Filter Buttons
+allFilterBtn.addEventListener('click', () => setActiveFilter('all'));
+activeFilterBtn.addEventListener('click', () => setActiveFilter('active'));
+completedFilterBtn.addEventListener('click', () => setActiveFilter('completed'));
+// NEW CODE END
+
+
 // Load tasks and set min due date when the page loads
 document.addEventListener('DOMContentLoaded', () => {
     setMinDueDate();
     loadTasks();
+    // NEW CODE START - Ensure the correct filter button is active on load
+    setActiveFilter(currentFilter);
+    // NEW CODE END
 });
