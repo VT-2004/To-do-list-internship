@@ -3,17 +3,27 @@
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>To-Do List</title>
-    <link rel="icon" type="image/png" href="https://mir-s3-cdn-cf.behance.net/user/276/fa421a21490311.595c96cd85d0c.png">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="container">
+        <h1>To-Do List</h1>
+        <div class="container">
         <h1>To-Do List</h1>
         <div class="task-input-group">
             <input type="text" id="taskInput" placeholder="Add a new task...">
             <input type="date" id="dueDateInput">
             <button id="addTaskBtn">Add Task</button>
         </div>
+
+        <div class="filters">
+            <button id="allFilterBtn" class="filter-btn active" data-filter="all">All</button>
+            <button id="activeFilterBtn" class="filter-btn" data-filter="active">Active</button>
+            <button id="completedFilterBtn" class="filter-btn" data-filter="completed">Completed</button>
+        </div>
+        <ul id="todoList" class="todo-list">
+        </ul>
+    </div>
         <ul id="todoList" class="todo-list">
         </ul>
     </div>
